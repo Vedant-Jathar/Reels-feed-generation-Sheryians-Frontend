@@ -1,6 +1,25 @@
+import { Button, Form, Input } from "antd"
+import { useForm } from "antd/es/form/Form"
 import { Link } from "react-router-dom"
+import { api } from "../httpClient"
+import { useNavigate } from "react-router-dom"
 
 const UserLogin = () => {
+    const [userLoginForm] = useForm()
+
+    const navigate = useNavigate()
+
+    async function handleFormSubmit() {
+        const data = userLoginForm.getFieldsValue()
+        const response = await api.post("/auth/user/login", data)
+
+        if (response.status === 200) {
+            navigate("/")
+        }
+
+        console.log("response.data: ", response.data);
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-200 via-red-200 to-yellow-200 p-6">
             <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 space-y-6">
@@ -19,40 +38,44 @@ const UserLogin = () => {
                     <p className="text-gray-500 text-sm mt-1">Please enter your details</p>
                 </div>
 
-                {/* Login / Signup Form */}
-                <form className="space-y-5">
+                <Form
+                    form={userLoginForm}
+                    layout="vertical"
+                    className="space-y-5"
+                >
                     {/* Email */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            placeholder="you@example.com"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                        />
-                    </div>
+                    <Form.Item
+                        label="Email Address"
+                        name="email"
+                        rules={[
+                            { required: true, message: "Please enter your email address!" },
+                            { type: "email", message: "Please enter a valid email!" },
+                        ]}
+                    >
+                        <Input placeholder="you@example.com" />
+                    </Form.Item>
 
                     {/* Password */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            placeholder="••••••••"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                        />
-                    </div>
+                    <Form.Item
+                        label="Password"
+                        name="password"
+                        rules={[{ required: true, message: "Please enter your password!" }]}
+                    >
+                        <Input.Password placeholder="••••••••" />
+                    </Form.Item>
 
                     {/* Submit Button */}
-                    <button
-                        type="button"
-                        className="w-full py-3 bg-gradient-to-r from-red-400 to-pink-400 text-white font-semibold rounded-xl shadow-lg hover:scale-105 transform transition"
-                    >
-                        Continue
-                    </button>
-                </form>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            onClick={handleFormSubmit}
+                            htmlType="submit"
+                            className="w-full py-3 rounded-xl shadow-lg bg-gradient-to-r from-red-400 to-pink-400 border-0"
+                        >
+                            Continue
+                        </Button>
+                    </Form.Item>
+                </Form>
 
                 {/* Footer */}
                 <div className="text-center text-sm text-gray-500">

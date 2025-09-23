@@ -1,6 +1,22 @@
+import { Button, Form, Input } from "antd"
+import { useForm } from "antd/es/form/Form"
 import { Link } from "react-router-dom"
+import { api } from "../httpClient"
+import { useNavigate } from "react-router-dom"
 
 const FoodPartnerRegister = () => {
+    const [fpRegisterForm] = useForm()
+    const navigate = useNavigate()
+
+    async function handleFormSubmit() {
+        const data = fpRegisterForm.getFieldsValue()
+        const response = await api.post("/auth/food-partner/register-food-partner", data)
+        if (response.status === 200) {
+            navigate("/food-partner/create-food-item")
+        }
+        console.log("response.data: ", response.data);
+    }
+
     return (
         <>
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-200 via-red-200 to-yellow-200 p-6">
@@ -20,85 +36,84 @@ const FoodPartnerRegister = () => {
                         <p className="text-gray-500 text-sm mt-1">Please enter your details</p>
                     </div>
 
-                    {/* Login / Signup Form */}
-                    <form className="space-y-5">
-                        {/* Name (Signup only) */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Business Name
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="John Doe"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                            />
-                        </div>
+                    <Form
+                        form={fpRegisterForm}
+                        layout="vertical"
+                        className="space-y-5"
+                    >
+                        {/* Business Name */}
+                        <Form.Item
+                            label="Business Name"
+                            name="name"
+                            rules={[{ required: true, message: "Please enter your business name!" }]}
+                        >
+                            <Input placeholder="John Doe" />
+                        </Form.Item>
 
                         {/* Email */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Email Address
-                            </label>
-                            <input
-                                type="email"
-                                placeholder="you@example.com"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                            />
-                        </div>
+                        <Form.Item
+                            label="Email Address"
+                            name="email"
+                            rules={[
+                                { required: true, message: "Please enter your email address!" },
+                                { type: "email", message: "Please enter a valid email!" },
+                            ]}
+                        >
+                            <Input placeholder="you@example.com" />
+                        </Form.Item>
 
                         {/* Description */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Description
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="description"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                            />
-                        </div>
+                        <Form.Item
+                            label="Description"
+                            name="description"
+                            rules={[{ required: true, message: "Please enter a description!" }]}
+                        >
+                            <Input placeholder="description" />
+                        </Form.Item>
 
-                        {/* Contact No: */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Contact No:
-                            </label>
-                            <input
-                                type="number"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                            />
-                        </div>
+                        {/* Contact No */}
+                        <Form.Item
+                            label="Contact No"
+                            name="contactNo"
+                            rules={[
+                                { required: true, message: "Please enter your contact number!" },
+                                { pattern: /^[0-9]{10}$/, message: "Please enter a valid 10-digit number!" },
+                            ]}
+                        >
+                            <Input type="number" placeholder="9876543210" />
+                        </Form.Item>
 
-                        {/* Address: */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Address:
-                            </label>
-                            <input
-                                placeholder="address"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                            />
-                        </div>
+                        {/* Address */}
+                        <Form.Item
+                            label="Address"
+                            name="address"
+                            rules={[{ required: true, message: "Please enter your address!" }]}
+                        >
+                            <Input placeholder="address" />
+                        </Form.Item>
+
                         {/* Password */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                            />
-                        </div>
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: "Please enter your password!" }]}
+                        >
+                            <Input.Password placeholder="••••••••" />
+                        </Form.Item>
 
                         {/* Submit Button */}
-                        <button
-                            type="button"
-                            className="w-full py-3 bg-gradient-to-r from-red-400 to-pink-400 text-white font-semibold rounded-xl shadow-lg hover:scale-105 transform transition"
-                        >
-                            Continue
-                        </button>
-                    </form>
+                        <Form.Item>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                onClick={handleFormSubmit}
+                                className="w-full py-3 rounded-xl shadow-lg bg-gradient-to-r from-red-400 to-pink-400 border-0"
+                            >
+                                Continue
+                            </Button>
+                        </Form.Item>
+                    </Form>
+
 
                     {/* Footer */}
                     <div className="text-center text-sm text-gray-500">

@@ -3,14 +3,19 @@ import { Link } from "react-router-dom";
 import { Button, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { api } from "../httpClient";
+import { useNavigate } from "react-router-dom";
 
 export const UserRegister: React.FC = () => {
-
     const [registerForm] = useForm()
+    const navigate = useNavigate()
 
     const handleFormSubmit = async () => {
         const data = registerForm.getFieldsValue()
         const result = await api.post("/auth/user/register", data)
+
+        if (result.status === 200) {
+            navigate("/")
+        }
 
         console.log("result.data: ", result.data);
     }
